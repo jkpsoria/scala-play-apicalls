@@ -1,0 +1,15 @@
+@(cryptocurrencies: Seq[Coin])
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cryptocurrencies</title>
+</head>
+<body>
+  <h1>Cryptocurrencies</h1>
+  <ul>
+    @for(crypto <- cryptocurrencies) {
+      <li>@crypto.name (@crypto.symbol) - ID: @crypto.id</li>
+    }
+  </ul>
+</body>
+</html>

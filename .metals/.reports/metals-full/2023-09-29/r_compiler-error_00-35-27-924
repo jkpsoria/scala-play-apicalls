@@ -1,0 +1,89 @@
+file%3A%2F%2F%2FUsers%2Fjkpancho%2FDownloads%2Fjkpancho-pokedex%2Fapp%2Fcontrollers%2FCryptoController.scala:9: error: ; expected but identifier found
+case class Coin(id: String, symbol: String, name: String)\
+                                                         ^
+occurred in the presentation compiler.
+
+action parameters:
+uri: file://<WORKSPACE>/app/controllers/CryptoController.scala
+text:
+package controllers
+
+import javax.inject._
+import play.api._
+import play.api.mvc._
+import play.api.libs.ws._
+import scala.concurrent.{ExecutionContext, Future}
+
+case class Coin(id: String, symbol: String, name: String)\
+@Singleton
+class CryptoController @Inject()(ws: WSClient, cc: ControllerComponents)(implicit ec: ExecutionContext) extends AbstractController(cc) {
+
+  def getBitcoinPrice = Action.async { implicit request: Request[AnyContent] =>
+    val apiKey = "2BD826C3-8D0E-4E08-BF11-76FB1E8F7ACF" // Replace with your CoinAPI API key
+    val coinAPIUrl = "https://rest.coinapi.io/v1/exchangerate/BTC/USD?apiKey=2BD826C3-8D0E-4E08-BF11-76FB1E8F7ACF"
+
+    ws.url(coinAPIUrl).get().map { response =>
+      if (response.status == 200) {
+        val bitcoinPrice = (response.json \ "rate").as[Double]
+        Ok(views.html.bitcoinPrice(bitcoinPrice))
+      } else {
+        InternalServerError("Failed to fetch Bitcoin price")
+      }
+    }
+  }
+
+  def getAllCryptocurrencies = Action.async { implicit request: Request[AnyContent] =>
+    val coinAPIUrl = "https://rest.coinapi.io/v1/assets"
+
+    ws.url(coinAPIUrl).get().map { response =>
+      if (response.status == 200) {
+        val cryptocurrencies = (response.json \ "data").as[Seq[Coin]]
+        Ok(views.html.cryptocurrencies(cryptocurrencies))
+      } else {
+        InternalServerError("Failed to fetch cryptocurrencies")
+      }
+    }
+  }
+}
+
+
+
+error stacktrace:
+scala.meta.internal.parsers.Reporter.syntaxError(Reporter.scala:16)
+	scala.meta.internal.parsers.Reporter.syntaxError$(Reporter.scala:16)
+	scala.meta.internal.parsers.Reporter$$anon$1.syntaxError(Reporter.scala:22)
+	scala.meta.internal.parsers.Reporter.syntaxError(Reporter.scala:17)
+	scala.meta.internal.parsers.Reporter.syntaxError$(Reporter.scala:17)
+	scala.meta.internal.parsers.Reporter$$anon$1.syntaxError(Reporter.scala:22)
+	scala.meta.internal.parsers.ScalametaParser.syntaxErrorExpected(ScalametaParser.scala:367)
+	scala.meta.internal.parsers.ScalametaParser.expect(ScalametaParser.scala:369)
+	scala.meta.internal.parsers.ScalametaParser.accept(ScalametaParser.scala:373)
+	scala.meta.internal.parsers.ScalametaParser.acceptStatSep(ScalametaParser.scala:389)
+	scala.meta.internal.parsers.ScalametaParser.acceptStatSepOpt(ScalametaParser.scala:393)
+	scala.meta.internal.parsers.ScalametaParser.statSeqBuf(ScalametaParser.scala:4357)
+	scala.meta.internal.parsers.ScalametaParser.bracelessPackageStats$1(ScalametaParser.scala:4579)
+	scala.meta.internal.parsers.ScalametaParser.$anonfun$batchSource$11(ScalametaParser.scala:4590)
+	scala.meta.internal.parsers.ScalametaParser.autoEndPos(ScalametaParser.scala:349)
+	scala.meta.internal.parsers.ScalametaParser.$anonfun$batchSource$10(ScalametaParser.scala:4590)
+	scala.meta.internal.parsers.ScalametaParser.tryParse(ScalametaParser.scala:201)
+	scala.meta.internal.parsers.ScalametaParser.$anonfun$batchSource$1(ScalametaParser.scala:4582)
+	scala.meta.internal.parsers.ScalametaParser.atPos(ScalametaParser.scala:300)
+	scala.meta.internal.parsers.ScalametaParser.autoPos(ScalametaParser.scala:346)
+	scala.meta.internal.parsers.ScalametaParser.batchSource(ScalametaParser.scala:4550)
+	scala.meta.internal.parsers.ScalametaParser.$anonfun$source$1(ScalametaParser.scala:4543)
+	scala.meta.internal.parsers.ScalametaParser.atPos(ScalametaParser.scala:300)
+	scala.meta.internal.parsers.ScalametaParser.autoPos(ScalametaParser.scala:346)
+	scala.meta.internal.parsers.ScalametaParser.source(ScalametaParser.scala:4543)
+	scala.meta.internal.parsers.ScalametaParser.entrypointSource(ScalametaParser.scala:4548)
+	scala.meta.internal.parsers.ScalametaParser.parseSourceImpl(ScalametaParser.scala:127)
+	scala.meta.internal.parsers.ScalametaParser.$anonfun$parseSource$1(ScalametaParser.scala:124)
+	scala.meta.internal.parsers.ScalametaParser.parseRuleAfterBOF(ScalametaParser.scala:51)
+	scala.meta.internal.parsers.ScalametaParser.parseRule(ScalametaParser.scala:46)
+	scala.meta.internal.parsers.ScalametaParser.parseSource(ScalametaParser.scala:124)
+	scala.meta.parsers.Parse$.$anonfun$parseSource$1(Parse.scala:29)
+	scala.meta.parsers.Parse$$anon$1.apply(Parse.scala:36)
+	scala.meta.parsers.Api$XtensionParseDialectInput.parse(Api.scala:25)
+	scala.meta.internal.semanticdb.scalac.ParseOps$XtensionCompilationUnitSource.toSource(ParseOps.scala:17)
+	scala.meta.internal.semanticdb.scalac.TextDocumentOps$XtensionCompilationUnitDocument.toTextDocument(TextDocumentOps.scala:206)
+	scala.meta.internal.pc.SemanticdbTextDocumentProvider.textDocument(SemanticdbTextDocumentProvider.scala:54)
+	scala.meta.internal.pc.ScalaPresentationCompiler.$anonfun$semanticdbTextDocument$1(ScalaPresentationCompiler.scala:350)

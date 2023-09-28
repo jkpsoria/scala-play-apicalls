@@ -1,0 +1,16 @@
+@(pokemonNames: Seq[String])
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pokemon Names</title>
+</head>
+<body>
+    <h1>Pokemon Names</h1>
+    <ul>
+        @for(name <- pokemonNames) {
+            <li>@name</li>
+        }
+    </ul>
+</body>
+</html>
